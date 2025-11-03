@@ -1,0 +1,55 @@
+name: Postgres Backup
+on: [ push ]
+
+jobs:
+  get-postgres-versions:
+      runs-on: ubuntu-latest
+      outputs:
+        matrix: ${{ steps.get-versions.outputs.matrix }}
+      steps:
+        - name: Install required packages
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y curl jq
+        - id: get-versions
+          run: |
+            MATRIX=$(curl -s "https://registry.hub.docker.com/v2/repositories/library/postgres/tags/?page_size=1024" | jq -c '[.results[].name | select(test("rc|beta") | not) | select(test("-(bookworm|trixie|bullseye)$") or test("^[0-9]+(\\.[0-9]+)*$")) | select((split("-")[0] | split(".")[0] | tonumber) > 16)] | sort | { versions: . }')
+            echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  build-and-publish-matrix:
+    needs: get-postgres-versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.get-postgres-versions.outputs.matrix) }}
+    steps:
+      - name: Github Environment Variables
+        run: |
+          echo "🔎 github.repository=${{github.repository}}"
+          echo "🔎 github.sha=${{github.sha}}"
+          echo "🔎 github.event.repository.name=${{github.event.repository.name}}"
+          echo "🔎 github.ref_name=${{github.ref_name}}"
+          echo "🔎 github.workspace=${{github.workspace}}"
+          echo "🔎 matrix.version=${{matrix.versions}}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESSTOKEN_RW }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8
+          build-args: |
+            BASE_IMAGE_VERSION=${{matrix.versions}}
+          tags: "baunach/${{github.event.repository.name}}:${{matrix.versions}}"
