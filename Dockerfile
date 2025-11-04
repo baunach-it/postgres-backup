@@ -15,9 +15,9 @@ ENV POSTGRES_BACKUP_AWS_S3_PATH=""
 
 RUN apt-get update && apt-get install -y dos2unix gzip curl unzip && rm -rf /var/lib/apt/lists/*
 
-COPY script.sh /usr/local/bin/backup.sh
-RUN dos2unix /usr/local/bin/backup.sh && chmod +x /usr/local/bin/backup.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN dos2unix /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
 VOLUME [ "/backup" ]
 
-ENTRYPOINT ["/usr/local/bin/backup.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
