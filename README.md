@@ -18,6 +18,8 @@ POSTGRES_BACKUP_AWS_SECRET_ACCESS_KEY=
 POSTGRES_BACKUP_AWS_DEFAULT_REGION=
 POSTGRES_BACKUP_AWS_S3_BUCKET=
 POSTGRES_BACKUP_AWS_S3_PATH=
+POSTGRES_BACKUP_AWS_CLI_VERSION=
+POSTGRES_BACKUP_S3_ENDPOINT=
 ```
 then reference the .env file when running the container and use the `latest` postgres version or use a specific one like `18.0`
 ```bash
