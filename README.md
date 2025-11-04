@@ -1,7 +1,8 @@
 # Docker Image to Backup Postgres databases
 This image is based on a standard postgres image and supports pushing dumps to S3 compatible storage using the aws cli.
-
 The aws cli will be automatically installed when the env vars `AWS_S3_BUCKET` and `AWS_S3_PATH` are set.
+
+[Dockerfile](https://github.com/baunach-it/postgres-backup/blob/main/Dockerfile)
 
 ## Usage
 Create a .env file in the desired location
