@@ -18,7 +18,7 @@ jobs:
             sudo apt-get install -y curl jq
         - id: get-versions
           run: |
-            MATRIX=$(curl -s "https://registry.hub.docker.com/v2/repositories/library/postgres/tags/?page_size=1024" | jq -c '[.results[].name | select(test("rc|beta|alpine|latest") | not) | select(test("^[0-9]+(\\.[0-9]+)*")) | select((split("-")[0] | split(".")[0] | tonumber) > 16)] | sort | { versions: . }')
+            MATRIX=$(curl -s "https://registry.hub.docker.com/v2/repositories/library/postgres/tags/?page_size=1024" | jq -c '[.results[].name | select(test("rc|beta|alpine|latest") | not) | select(test("^[0-9]+(\\.[0-9]+)*")) | select((split("-")[0] | split(".")[0] | tonumber) > 15)] | sort | { versions: . }')
             echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build-and-publish-matrix:
