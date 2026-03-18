@@ -16,7 +16,7 @@ ENV POSTGRES_BACKUP_AWS_CLI_VERSION=""
 ENV POSTGRES_BACKUP_S3_ENDPOINT=""
 
 RUN apt-get update --quiet && \
-    apt-get install -y --no-install-recommends dos2unix gzip curl unzip && \
+    apt-get install -y --no-install-recommends ca-certificates dos2unix gzip curl unzip && \
     rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
