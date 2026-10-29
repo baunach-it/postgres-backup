@@ -30,3 +30,11 @@ then reference the .env file when running the container and use the `latest` pos
 ```bash
 docker run --rm --env-file .env -v /desired/backup/path:/backup --network desired-network baunach/postgres-backup:latest
 ```
+
+## License
+The Dockerfile and scripts in this repository are licensed under [MIT-0](LICENSE).
+
+The image contains third-party software that is subject to its own licenses, including:
+- PostgreSQL from the official `postgres` base image: PostgreSQL License
+- Debian packages of the base image and those installed by the Dockerfile (`ca-certificates`, `dos2unix`, `gzip`, `curl`, `unzip`): their respective licenses
+- AWS CLI v2, downloaded and installed by `entrypoint.sh` at container start when S3 is used: Apache-2.0
